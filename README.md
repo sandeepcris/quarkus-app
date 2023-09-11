@@ -52,3 +52,11 @@ If you want to learn more about building native executables, please consult http
 - SmallRye OpenAPI ([guide](https://quarkus.io/guides/openapi-swaggerui)): Document your REST APIs with OpenAPI - comes with Swagger UI
 - REST resources for Hibernate Reactive with Panache ([guide](https://quarkus.io/guides/rest-data-panache)): Generate JAX-RS resources for your Hibernate Reactive Panache entities and repositories
 - JDBC Driver - PostgreSQL ([guide](https://quarkus.io/guides/datasource)): Connect to the PostgreSQL database via JDBC
+
+
+## Setup Tekton Pipeline
+### Install Tekton
+- https://pipelinesascode.com/docs/guide/cli/
+  - brew install openshift-pipelines/pipelines-as-code/tektoncd-pac
+- kubectl apply -f https://raw.githubusercontent.com/openshift-pipelines/pipelines-as-code/nightly/release.yaml
+- tkn pac create repository
