@@ -7,12 +7,18 @@ spec:
     - name: repo-url
       type: string
       description: The git repo to clone from.
+    - name: image-reference
+      type: string
+      description: Image name with tag
   workspaces:
     - name: shared-data
       description: |
         This workspace contains the cloned repo files, so they can be read by the next task.
     - name: git-credentials
       description: Git credentials.
+    # - name: maven-settings
+    #   description: pipeline requires workspace with this name to be provided by pipelinerun.
+    # - name: maven-local-m2
   tasks:
     - name: fetch-source
       taskRef:
@@ -20,11 +26,50 @@ spec:
       workspaces:
         - name: output
           workspace: shared-data
+          subPath: data
         - name: basic-auth
           workspace: git-credentials
       params:
         - name: url
           value: $(params.repo-url)
+        - name: subdirectory
+          value: ""
+        - name: deleteExisting
+          value: "true"
+    - name: maven-run
+      taskRef:
+        name: maven
+      runAfter:
+        - fetch-source
+      workspaces:
+        - name: maven-settings
+          workspace: shared-data
+          subPath: settings
+        - name: source
+          workspace: shared-data
+          subPath: data
+        - name: maven-local-repo
+          workspace: shared-data
+          subPath: .m2
+      params:
+        - name: MAVEN_IMAGE
+          value: maven:3.8.5-openjdk-17
+        - name: GOALS
+          value:
+            - clean
+            - install
+            - -DskipTests
+    - name: build-push
+      runAfter: ["maven-run"]
+      taskRef:
+        name: kaniko
+      workspaces:
+      - name: source
+        workspace: shared-data
+        subPath: data
+      params:
+      - name: IMAGE
+        value: $(params.image-reference)
 ---
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
@@ -33,21 +78,34 @@ metadata:
 spec:
   pipelineRef:
     name: clone-read
-  podTemplate:
-    securityContext:
-      fsGroup: 65532
   workspaces:
+  - name: maven-settings
+    emptyDir: {}
   - name: shared-data
-    volumeClaimTemplate:
-      spec:
-        accessModes:
-        - ReadWriteOnce
-        resources:
-          requests:
-            storage: 1Gi
+    persistentvolumeclaim:
+        claimName: shared-data
+    # volumeClaimTemplate:
+    #   spec:
+    #     accessModes:
+    #     - ReadWriteOnce
+    #     resources:
+    #       requests:
+    #         storage: 1Gi
+  - name: maven-local-m2
+    persistentvolumeclaim:
+        claimName: shared-data
+    # volumeClaimTemplate:
+    #   spec:
+    #     accessModes:
+    #     - ReadWriteOnce
+    #     resources:
+    #       requests:
+    #         storage: 3Gi
   - name: git-credentials
     secret:
       secretName: git-credentials           
   params:
     - name: repo-url
       value: https://github.com/rajat965ng/quarkus-app
+    - name: image-reference
+      value: image-registry:5000/quarkus/codeWithQuarkus
