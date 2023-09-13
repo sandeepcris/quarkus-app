@@ -10,12 +10,16 @@ spec:
     - name: image-reference
       type: string
       description: Image name with tag
+    - name: registry
+      type: string
   workspaces:
     - name: shared-data
       description: |
         This workspace contains the cloned repo files, so they can be read by the next task.
     - name: git-credentials
       description: Git credentials.
+    - name: docker-credentials
+      description: Docker registry credentials.
     # - name: maven-settings
     #   description: pipeline requires workspace with this name to be provided by pipelinerun.
     # - name: maven-local-m2
@@ -67,9 +71,15 @@ spec:
       - name: source
         workspace: shared-data
         subPath: data
+      - name: dockerconfig
+        workspace: docker-credentials
+        subPath: data
       params:
       - name: IMAGE
         value: $(params.image-reference)
+      - name: EXTRA_ARGS
+        value: 
+        - --skip-tls-verify-registry=$(params.registry)
 ---
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
@@ -103,9 +113,14 @@ spec:
     #         storage: 3Gi
   - name: git-credentials
     secret:
-      secretName: git-credentials           
+      secretName: git-credentials
+  - name: docker-credentials
+    secret:
+      secretName: dockercred                
   params:
     - name: repo-url
       value: https://github.com/rajat965ng/quarkus-app
     - name: image-reference
-      value: image-registry:5000/quarkus/codeWithQuarkus
+      value: default-route-openshift-image-registry.apps-crc.testing/quarkus/codewithquarkus
+    - name: registry
+      value: default-route-openshift-image-registry.apps-crc.testing  

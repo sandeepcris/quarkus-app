@@ -61,6 +61,17 @@ If you want to learn more about building native executables, please consult http
   - git-clone
   - maven
 
+
+## create docker registry secret
+```
+oc create secret docker-registry <pull_secret_name> \
+    --docker-server=<registry_server> \
+    --docker-username=<user_name> \
+    --docker-password=<password> \
+    --docker-email=<email>
+```
+
+
 ### With PipelineAsCode
 - https://pipelinesascode.com/docs/guide/cli/
   - brew install openshift-pipelines/pipelines-as-code/tektoncd-pac
