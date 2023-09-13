@@ -55,7 +55,13 @@ If you want to learn more about building native executables, please consult http
 
 
 ## Setup Tekton Pipeline
-### Install Tekton
+### Install Tekton Plugins
+- brew install tekton
+- Plugins: https://hub.tekton.dev/
+  - git-clone
+  - maven
+
+### With PipelineAsCode
 - https://pipelinesascode.com/docs/guide/cli/
   - brew install openshift-pipelines/pipelines-as-code/tektoncd-pac
 - kubectl apply -f https://raw.githubusercontent.com/openshift-pipelines/pipelines-as-code/nightly/release.yaml
