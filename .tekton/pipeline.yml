@@ -67,16 +67,20 @@ spec:
     - name: build-push
       runAfter: ["maven-run"]
       taskRef:
-        name: buildah
+        name: kaniko
       workspaces:
       - name: source
         workspace: shared-data
         subPath: data
+      - name: dockerconfig
+        workspace: docker-credentials
+        subPath: data
       params:
       - name: IMAGE
         value: $(params.image-reference):$(tasks.fetch-source.results.commit)
-      - name: TLSVERIFY
-        value: "false"
+      - name: EXTRA_ARGS
+        value: 
+        - --skip-tls-verify-registry=$(params.registry)
     - name: deploy
       runAfter: ["build-push"]
       taskRef:
