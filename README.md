@@ -60,6 +60,8 @@ If you want to learn more about building native executables, please consult http
 - Plugins: https://hub.tekton.dev/
   - git-clone
   - maven
+  - kaniko
+  - helm-upgrade-from-source (v3)
 
 
 ## create docker registry secret

@@ -26,4 +26,8 @@ spec:
     - name: image-reference
       value: default-route-openshift-image-registry.apps-crc.testing/quarkus/codewithquarkus
     - name: registry
-      value: default-route-openshift-image-registry.apps-crc.testing  
+      value: default-route-openshift-image-registry.apps-crc.testing
+    - name: charts_dir
+      value: helm_chart/app
+    - name: release_name
+      value: demoApp

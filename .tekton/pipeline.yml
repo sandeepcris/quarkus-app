@@ -12,6 +12,10 @@ spec:
       description: Image name with tag
     - name: registry
       type: string
+    - name: charts_dir
+      type: string
+    - name: release_name
+      type: string
   workspaces:
     - name: shared-data
       description: |
@@ -77,3 +81,16 @@ spec:
       - name: EXTRA_ARGS
         value: 
         - --skip-tls-verify-registry=$(params.registry)
+    - name: deploy
+      runAfter: ["build-push"]
+      taskRef:
+        name: helm-upgrade-from-source
+      workspaces:
+      - name: source
+        workspace: shared-data
+        subPath: data
+      params:
+      - name: charts_dir
+        value: $(params.charts_dir)
+      - name: release_name
+        value: $(params.release_name)        
