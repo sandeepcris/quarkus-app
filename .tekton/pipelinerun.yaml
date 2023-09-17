@@ -2,6 +2,8 @@ apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
 metadata:
   name: clone-read-run
+  annotations:
+    version: v1.2
 spec:
   pipelineRef:
     name: clone-read
@@ -30,4 +32,4 @@ spec:
     - name: charts_dir
       value: helm_chart/app
     - name: release_name
-      value: demoApp
+      value: demoapp
