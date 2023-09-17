@@ -20,9 +20,6 @@ spec:
       description: Git credentials.
     - name: docker-credentials
       description: Docker registry credentials.
-    # - name: maven-settings
-    #   description: pipeline requires workspace with this name to be provided by pipelinerun.
-    # - name: maven-local-m2
   tasks:
     - name: fetch-source
       taskRef:
@@ -94,23 +91,9 @@ spec:
   - name: shared-data
     persistentvolumeclaim:
         claimName: shared-data
-    # volumeClaimTemplate:
-    #   spec:
-    #     accessModes:
-    #     - ReadWriteOnce
-    #     resources:
-    #       requests:
-    #         storage: 1Gi
   - name: maven-local-m2
     persistentvolumeclaim:
         claimName: shared-data
-    # volumeClaimTemplate:
-    #   spec:
-    #     accessModes:
-    #     - ReadWriteOnce
-    #     resources:
-    #       requests:
-    #         storage: 3Gi
   - name: git-credentials
     secret:
       secretName: git-credentials
