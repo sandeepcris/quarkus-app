@@ -71,6 +71,8 @@ oc create secret docker-registry <pull_secret_name> \
     --docker-username=<user_name> \
     --docker-password=<password> \
     --docker-email=<email>
+
+oc create secret docker-registry dockercred --docker-server=default-route-openshift-image-registry.apps-crc.testing --docker-username=kubeadmin --docker-password=$(oc whoami -t)    
 ```
 
 
