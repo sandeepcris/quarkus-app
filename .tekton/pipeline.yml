@@ -77,7 +77,7 @@ spec:
         subPath: data
       params:
       - name: IMAGE
-        value: $(params.image-reference)
+        value: $(params.image-reference):$(tasks.fetch-source.results.commit)
       - name: EXTRA_ARGS
         value: 
         - --skip-tls-verify-registry=$(params.registry)
@@ -93,4 +93,6 @@ spec:
       - name: charts_dir
         value: $(params.charts_dir)
       - name: release_name
-        value: $(params.release_name)        
+        value: $(params.release_name)
+      - name: overwrite_values
+        value: "image.tag=$(tasks.fetch-source.results.commit)"
