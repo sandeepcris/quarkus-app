@@ -26,9 +26,9 @@ spec:
     - name: repo-url
       value: https://github.com/rajat965ng/quarkus-app
     - name: image-reference
-      value: default-route-openshift-image-registry.apps-crc.testing/quarkus/codewithquarkus
+      value: image-registry:5000/quarkus/codewithquarkus
     - name: registry
-      value: default-route-openshift-image-registry.apps-crc.testing
+      value: image-registry:5000
     - name: charts_dir
       value: helm_chart/app
     - name: release_name
