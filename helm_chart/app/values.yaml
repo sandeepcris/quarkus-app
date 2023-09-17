@@ -81,3 +81,13 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+
+livenessProbe:
+  httpGet:
+    path: /q/health
+    port: http
+readinessProbe:
+  httpGet:
+    path: /q/health
+    port: http
