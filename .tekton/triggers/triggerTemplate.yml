@@ -1,0 +1,56 @@
+apiVersion: triggers.tekton.dev/v1beta1
+kind: TriggerTemplate
+metadata:
+  name: demoapp
+spec:
+  params:
+  - name: git-repo-url
+    description: The git repository url
+  - name: git-revision
+    description: The git revision
+    default: master
+  - name: git-repo-name
+    description: The name of the deployment to be created / patched
+  resourcetemplates:
+  - apiVersion: tekton.dev/v1beta1
+    kind: PipelineRun
+    metadata:
+      generateName: build-deploy-$(tt.params.git-repo-name)-
+    spec:
+      serviceAccountName: pipeline
+      pipelineRef:
+        name: clone-read
+      params:
+      - name: repo-url
+        value: https://github.com/rajat965ng/quarkus-app
+      - name: image-reference
+        value: default-route-openshift-image-registry.apps-crc.testing/quarkus/codewithquarkus
+      - name: registry
+        value: default-route-openshift-image-registry.apps-crc.testing
+      - name: charts_dir
+        value: helm_chart/app
+      - name: release_name
+        value: demoapp
+      # - name: deployment-name
+      #   value: $(tt.params.git-repo-name)
+      # - name: git-url
+      #   value: $(tt.params.git-repo-url)
+      # - name: git-revision
+      #   value: $(tt.params.git-revision)
+      # - name: IMAGE
+      #   value: image-registry.openshift-image-registry.svc:5000/$(context.pipelineRun.namespace)/$(tt.params.git-repo-name)
+      workspaces:
+      - name: maven-settings
+        emptyDir: {}
+      - name: shared-data
+        persistentvolumeclaim:
+            claimName: shared-data
+      - name: maven-local-m2
+        persistentvolumeclaim:
+            claimName: shared-data
+      - name: git-credentials
+        secret:
+          secretName: git-credentials
+      - name: docker-credentials
+        secret:
+          secretName: dockercred
