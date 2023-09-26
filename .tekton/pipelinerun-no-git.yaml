@@ -118,7 +118,7 @@ spec:
     - name: repo-url
       value: https://github.com/rajat965ng/quarkus-app
     - name: image-reference
-      value: default-route-openshift-image-registry.apps-crc.testing/$(context.pipelineRun.namespace)/codewithquarkus
+      value: default-route-openshift-image-registry.apps-crc.testing/$(context.pipelineRun.namespace)/demoapp
     - name: registry
       value: default-route-openshift-image-registry.apps-crc.testing
     - name: charts_dir
