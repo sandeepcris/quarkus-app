@@ -91,7 +91,7 @@ spec:
       - name: release_name
         value: $(params.release_name)
       - name: overwrite_values
-        value: "image.tag=$(tasks.fetch-source.results.commit)"
+        value: "image.repository=$(params.image-reference),image.tag=$(tasks.fetch-source.results.commit)"
 ---
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
