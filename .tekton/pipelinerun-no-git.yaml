@@ -17,8 +17,6 @@ spec:
     - name: shared-data
       description: |
         This workspace contains the cloned repo files, so they can be read by the next task.
-    - name: docker-credentials
-      description: Docker registry credentials.
   tasks:
     - name: fetch-source
       taskRef:
@@ -65,9 +63,6 @@ spec:
       - name: source
         workspace: shared-data
         subPath: $(params.release_name)
-      # - name: dockerconfig
-      #   workspace: docker-credentials
-      #   subPath: $(params.release_name)
       params:
       - name: IMAGE
         value: $(params.registry)/$(context.pipelineRun.namespace)/$(params.release_name):$(tasks.fetch-source.results.commit)
@@ -107,10 +102,7 @@ spec:
         claimName: shared-data
   - name: maven-local-m2
     persistentvolumeclaim:
-        claimName: shared-data
-  # - name: docker-credentials
-  #   secret:
-  #     secretName: dockercred                
+        claimName: shared-data                
   params:
     - name: repo-url
       value: https://github.com/rajat965ng/quarkus-app.git
