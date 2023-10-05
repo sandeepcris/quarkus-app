@@ -7,9 +7,6 @@ spec:
     - name: repo-url
       type: string
       description: The git repo to clone from.
-    - name: image-reference
-      type: string
-      description: Image name with tag
     - name: registry
       type: string
     - name: charts_dir
@@ -29,7 +26,7 @@ spec:
       workspaces:
         - name: output
           workspace: shared-data
-          subPath: data
+          subPath: $(params.release_name)
       params:
         - name: url
           value: $(params.repo-url)
@@ -48,7 +45,7 @@ spec:
           subPath: settings
         - name: source
           workspace: shared-data
-          subPath: data
+          subPath: $(params.release_name)
         - name: maven-local-repo
           workspace: shared-data
           subPath: .m2
@@ -67,13 +64,13 @@ spec:
       workspaces:
       - name: source
         workspace: shared-data
-        subPath: data
-      - name: dockerconfig
-        workspace: docker-credentials
-        subPath: data
+        subPath: $(params.release_name)
+      # - name: dockerconfig
+      #   workspace: docker-credentials
+      #   subPath: $(params.release_name)
       params:
       - name: IMAGE
-        value: $(params.image-reference):$(tasks.fetch-source.results.commit)
+        value: $(params.registry)/$(context.pipelineRun.namespace)/$(params.release_name):$(tasks.fetch-source.results.commit)
       - name: EXTRA_ARGS
         value: 
         - --skip-tls-verify-registry=$(params.registry)
@@ -84,14 +81,14 @@ spec:
       workspaces:
       - name: source
         workspace: shared-data
-        subPath: data
+        subPath: $(params.release_name)
       params:
       - name: charts_dir
         value: $(params.charts_dir)
       - name: release_name
         value: $(params.release_name)
       - name: overwrite_values
-        value: "image.repository=$(params.image-reference),image.tag=$(tasks.fetch-source.results.commit)"
+        value: "image.repository=$(params.registry)/$(context.pipelineRun.namespace)/$(params.release_name),image.tag=$(tasks.fetch-source.results.commit)"
 ---
 apiVersion: tekton.dev/v1beta1
 kind: PipelineRun
@@ -111,16 +108,14 @@ spec:
   - name: maven-local-m2
     persistentvolumeclaim:
         claimName: shared-data
-  - name: docker-credentials
-    secret:
-      secretName: dockercred                
+  # - name: docker-credentials
+  #   secret:
+  #     secretName: dockercred                
   params:
     - name: repo-url
-      value: https://github.com/rajat965ng/quarkus-app
-    - name: image-reference
-      value: default-route-openshift-image-registry.apps-crc.testing/$(context.pipelineRun.namespace)/demoapp
+      value: https://github.com/rajat965ng/quarkus-app.git
     - name: registry
-      value: default-route-openshift-image-registry.apps-crc.testing
+      value: image-registry.openshift-image-registry.svc:5000
     - name: charts_dir
       value: helm_chart/app
     - name: release_name
